@@ -1,0 +1,14 @@
+Doxygen filter for Google Protocol Buffers .proto files.
+====================
+Version history:
+--------------------
+ 0.1 (2012-06-13)
+  - initial version
+--------------------
+ 0.2 (2012-06-15)
+  - added support for enums
+--------------------
+ 0.3 (2013-01-29)
+  - moved .proto file parsing logic to another function
+  - added comments to the file
+--------------------
