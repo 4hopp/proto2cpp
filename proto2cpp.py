@@ -16,7 +16,7 @@
 #        doxygen doxyfile
 #
 #
-# Copyright (C) 2012-2013 Timo Marjoniemi
+# Copyright (C) 2012-2013 Timo Marjoniemi <timmarjo@gmail.com>
 # All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
