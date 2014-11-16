@@ -3,7 +3,7 @@
 # This script converts .proto files into C++ style ones
 # and prints the output to standard output.
 #
-# version 0.4-beta
+# version 0.5-beta
 #
 # How to enable this filter in Doxygen:
 #   1. Generate Doxygen configuration file with command 'doxygen -g <filename>'
@@ -16,7 +16,7 @@
 #        doxygen doxyfile
 #
 #
-# Copyright (C) 2012-2013 Timo Marjoniemi <timmarjo@gmail.com> 
+# Copyright (C) 2012-2014 Timo Marjoniemi
 # All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
@@ -138,6 +138,7 @@ class proto2cpp:
       # Search for a closing brace.
       matchClosingBrace = re.search("}", line)
       if isEnum is True and matchClosingBrace is not None:
+        line = line[:matchClosingBrace.start()] + "};" + line[matchClosingBrace.end():]
         isEnum = False
       elif isEnum is False and re.search("}", line) is not None:
         # Message (to be struct) ends => add semicolon so that it'll
