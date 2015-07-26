@@ -1,5 +1,18 @@
 Doxygen filter for Google Protocol Buffers .proto files.
 ====================
+How to enable this filter in Doxygen:
+  1. Generate Doxygen configuration file with command 'doxygen -g <filename>'
+       e.g.  doxygen -g doxyfile
+  2. In the Doxygen configuration file, find JAVADOC_AUTOBRIEF and set it enabled
+       JAVADOC_AUTOBRIEF      = YES
+     This is required since version 0.6-beta
+  3. In the Doxygen configuration file, find FILE_PATTERNS and add *.proto
+       FILE_PATTERNS          = *.proto
+  4. In the Doxygen configuration file, find INPUT_FILTER and add this script
+       INPUT_FILTER           = "python proto2cpp.py"
+  5. Run Doxygen with the modified configuration
+       doxygen doxyfile
+====================
 Version history:
 --------------------
  0.1-pre-alpha (2012-06-13)
@@ -16,7 +29,7 @@ Version history:
   - 'classified' proto2cpp and updated documentation to make the
      script itself Doxygen compatible
   - changed all print statements to print() functions
-     * 64-bit Python v3.3.1 running on 64-bit Windows Home Premium
+     * 64-bit Python v3.3.1 running on 64-bit Windows 7 Home Premium
        did not automatically convert print statements to print()
        functions but instead raised a syntax error
   - made a change so that .proto files are converted before printing
@@ -26,3 +39,10 @@ Version history:
  0.5-beta (2014-11-16)
   - fixed enum ending to have semicolon to have proper enum syntax
     in struct (thanks to m47iast for pointing this out)
+--------------------
+ 0.6-beta (2015-07-27)
+  - made output to be more compact by removing extra empty lines and
+    not moving member comments before the member but keeping it after
+    the member instead
+     * these changes lead into need of enabling JAVADOC_AUTOBRIEF
+  - added steps for enabling the filter in Doxygen in this file

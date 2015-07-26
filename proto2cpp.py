@@ -3,20 +3,22 @@
 # This script converts .proto files into C++ style ones
 # and prints the output to standard output.
 #
-# version 0.5-beta
+# version 0.6-beta
 #
 # How to enable this filter in Doxygen:
 #   1. Generate Doxygen configuration file with command 'doxygen -g <filename>'
 #        e.g.  doxygen -g doxyfile
-#   2. In the Doxygen configuration file, find FILE_PATTERNS and add *.proto
+#   2. In the Doxygen configuration file, find JAVADOC_AUTOBRIEF and set it enabled
+#        JAVADOC_AUTOBRIEF      = YES
+#   3. In the Doxygen configuration file, find FILE_PATTERNS and add *.proto
 #        FILE_PATTERNS          = *.proto
-#   3. In the Doxygen configuration file, find INPUT_FILTER and add this script
+#   4. In the Doxygen configuration file, find INPUT_FILTER and add this script
 #        INPUT_FILTER           = "python proto2cpp.py"
-#   4. Run Doxygen with the modified configuration
+#   5. Run Doxygen with the modified configuration
 #        doxygen doxyfile
 #
 #
-# Copyright (C) 2012-2014 Timo Marjoniemi
+# Copyright (C) 2012-2015 Timo Marjoniemi
 # All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
@@ -94,9 +96,11 @@ class proto2cpp:
       self.log('\nXXXXXXXXXX\nXX ' + filename + '\nXXXXXXXXXX\n\n')
       try:
         with open(filename, 'r') as theFile:
+          output = ''
           for theLine in theFile:
-            print(theLine)
-            self.log(theLine)
+            output += theLine
+          print(output)
+          self.log(output)
         pass
       except IOError as e:
         self.logError('the file ' + filename + ' could not be opened for reading')
@@ -114,23 +118,27 @@ class proto2cpp:
   def parseFile(self, inputFile):
     # Go through the input file line by line.
     isEnum = False
+    # This variable is here as a workaround for not getting extra line breaks (each line
+    # ends with a line separator and print() method will add another one).
+    # We will be adding lines into this var and then print the var out at the end.
+    theOutput = ''
     for line in inputFile:
-      # Search for comment ("//") and add one more "/" to it to enable Doxygen documentation.
+      # Search for comment ("//") and add one more slash character ("/") to the comment
+      # block to make Doxygen detect it.
       matchComment = re.search("//", line)
-      if matchComment is not None:
+      # Search for semicolon and if one is found before comment, add a third slash character
+      # ("/") and a smaller than ("<") chracter to the comment to make Doxygen detect it.
+      matchSemicolon = re.search(";", line)
+      if matchSemicolon is not None and (matchComment is not None and matchSemicolon.start() < matchComment.start()):
+        line = line[:matchComment.start()] + "///<" + line[matchComment.end():]
+      elif matchComment is not None:
         line = line[:matchComment.start()] + "///" + line[matchComment.end():]
+
       # Search for "enum" and if one is found before comment,
-      # start changing all semicolons (";") to commas.
+      # start changing all semicolons (";") to commas (",").
       matchEnum = re.search("enum", line)
       if matchEnum is not None and (matchComment is None or matchEnum.start() < matchComment.start()):
         isEnum = True
-      # Search for semicolon (";") and if one is found before comment,
-      # move the comment to previous line.
-      matchSemicolon = re.search(";", line)
-      if matchSemicolon is not None and (matchComment is not None and matchSemicolon.start() < matchComment.start()):
-        # Split the line and write the comment first, then newline and code line last.
-        lines = line.split(";")
-        line = lines[1] + "\n" + lines[0] + ";\n"
       # Search again for semicolon if we have detected an enum, and replace semicolon with comma.
       if isEnum is True and re.search(";", line) is not None:
         matchSemicolon = re.search(";", line)
@@ -148,11 +156,20 @@ class proto2cpp:
       matchMsg = re.search("message", line)
       if matchMsg is not None and (matchComment is None or matchMsg.start() < matchComment.start()):
         output = "struct" + line[:matchMsg.start()] + line[matchMsg.end():]
-        print(output)
-        self.log(output)
+        theOutput += output
       else:
+        theOutput += line
+    # Now that we've got all lines in the string let's split the lines and print out
+    # one by one.
+    # This is a workaround to get rid of extra empty line at the end which print() method adds.
+    lines = theOutput.splitlines()
+    for line in lines:
+      if len(line) > 0:
         print(line)
-        self.log(line)
+        # Our logger does not add extra line breaks so explicitly adding one to make the log more readable.
+        self.log(line + '\n')
+      else:
+        self.log('\n   --- skipped empty line')
 
   ## Writes @p string to log file.
   ##
@@ -175,7 +192,6 @@ class proto2cpp:
     if self.logLevel >= self.logError:
       with open(self.errorLogFile, 'a') as theFile:
         theFile.write(string)
-
 
 converter = proto2cpp()
 # Doxygen will give us the file names
