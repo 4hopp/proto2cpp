@@ -146,11 +146,11 @@ class proto2cpp:
         matchSemicolon = re.search(";", line)
         line = line[:matchSemicolon.start()] + "," + line[matchSemicolon.end():]
       # Search for a closing brace.
-      matchClosingBrace = re.search("}", line)
+      matchClosingBrace = re.search("}", line[:matchComment.start()] if matchComment else line)
       if isEnum is True and matchClosingBrace is not None:
         line = line[:matchClosingBrace.start()] + "};" + line[matchClosingBrace.end():]
         isEnum = False
-      elif isEnum is False and re.search("}", line) is not None:
+      elif isEnum is False and matchClosingBrace is not None:
         # Message (to be struct) ends => add semicolon so that it'll
         # be a proper C(++) struct and Doxygen will handle it correctly.
         line = line[:matchClosingBrace.start()] + "};" + line[matchClosingBrace.end():]
@@ -197,7 +197,7 @@ class proto2cpp:
 
 converter = proto2cpp()
 # Doxygen will give us the file names
-for filename in sys.argv:
+for filename in sys.argv[1:]:
   converter.handleFile(filename)
 
 # end of file
