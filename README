@@ -52,7 +52,7 @@ Version history:
  0.7-beta (2018-04-19) OSI
   - Include changes from University of California.
   - Support for all OSI *.proto files.
-  - Separate statement and comments totreat both parts different (remove bugs 
+  - Separate statement and comments to treat both parts differently (remove bugs 
     regarding string modifications).
   - Remove "option" statements.
   - Add support for "extend" statements.
