@@ -48,3 +48,15 @@ Version history:
     the member instead
      * these changes lead into need of enabling JAVADOC_AUTOBRIEF
   - added steps for enabling the filter in Doxygen in this file
+--------------------
+ 0.7-beta (2018-04-19) OSI
+  - Include changes from University of California.
+  - Support for all OSI *.proto files.
+  - Separate statement and comments to treat both parts differently (remove bugs 
+    regarding string modifications).
+  - Remove "option" statements.
+  - Add support for "extend" statements.
+  - Change "repeat" from Template to standard member. --> Better collaboration 
+    diagrams.
+  - Fix problems with references of nested messages (replace "." with "::").
+  - Change mapping from C to C++.
