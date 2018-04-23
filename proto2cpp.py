@@ -90,25 +90,48 @@ class proto2cpp:
     if fnmatch.fnmatch(filename, '*.proto'):
       self.log('\nXXXXXXXXXX\nXX ' + filename + '\nXXXXXXXXXX\n\n')
       # Open the file. Use try to detect whether or not we have an actual file.
-      try:
-        with open(filename, 'r', encoding='utf8') as inputFile:
-          self.parseFile(inputFile)
-        pass
-      except IOError as e:
-        self.logError('the file ' + filename + ' could not be opened for reading')
+      if (sys.version_info > (3, 0)):
+        try:
+          with open(filename, 'r', encoding='utf8') as inputFile:
+            self.parseFile(inputFile)
+          pass
+        except IOError as e:
+          self.logError('the file ' + filename + ' could not be opened for reading')
+      else:
+        # Python 2 code in this block
+        try:
+          with open(filename, 'r') as inputFile:
+            self.parseFile(inputFile)
+          pass
+        except IOError as e:
+          self.logError('the file ' + filename + ' could not be opened for reading')
 
     elif not fnmatch.fnmatch(filename, os.path.basename(inspect.getfile(inspect.currentframe()))):
       self.log('\nXXXXXXXXXX\nXX ' + filename + '\nXXXXXXXXXX\n\n')
-      try:
-        with open(filename, 'r', encoding='utf8') as theFile:
-          output = ''
-          for theLine in theFile:
-            output += theLine
-          print(output)
-          self.log(output)
-        pass
-      except IOError as e:
-        self.logError('the file ' + filename + ' could not be opened for reading')
+      if (sys.version_info > (3, 0)):
+        try:
+          with open(filename, 'r', encoding='utf8') as theFile:
+            output = ''
+            for theLine in theFile:
+              output += theLine
+            print(output)
+            self.log(output)
+          pass
+        except IOError as e:
+          self.logError('the file ' + filename + ' could not be opened for reading')
+      else:
+        # Python 2 code in this block
+        try:
+          with open(filename, 'r') as theFile:
+            output = ''
+            for theLine in theFile:
+              output += theLine
+            print(output)
+            self.log(output)
+          pass
+        except IOError as e:
+          self.logError('the file ' + filename + ' could not be opened for reading')
+
     else:
       self.log('\nXXXXXXXXXX\nXX ' + filename + ' --skipped--\nXXXXXXXXXX\n\n')
 
