@@ -197,10 +197,9 @@ class proto2cpp:
       if matchEnum is not None:
         isEnum = True
         
-      # Search again for semicolon if we have detected an enum, and replace semicolon with comma.
-      if isEnum is True and re.search(";", line) is not None:
-        matchSemicolon = re.search(";", line)
-        line = line[:matchSemicolon.start()] + "," + line[matchSemicolon.end():]
+      # Search semicolon if we have detected an enum, and replace semicolon with comma.
+      if isEnum is True and matchSemicolon is not None:
+        line = line.replace(";", ",")
         
       # Search for a closing brace.
       matchClosingBrace = re.search("}", line)
