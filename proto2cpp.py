@@ -220,7 +220,7 @@ class proto2cpp:
       matchExt = re.search(r"\bextend\b", line)
       if matchExt is not None:
         a_extend = line[matchExt.end():]
-        matchName = re.search(r"\b\w[\S:]+\b", a_extend)
+        matchName = re.search(r"\b\w[\S:]*\b", a_extend)
         if matchName is not None:
           name = a_extend[matchName.start():matchName.end()]
           name = re.sub(r'\w+::',r'',name)
