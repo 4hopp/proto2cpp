@@ -49,7 +49,7 @@ import fnmatch
 import inspect
 
 ## Class for converting Google Protocol Buffers .proto files into C++ style output to enable Doxygen usage.
-## 
+##
 ## The C++ style output is printed into standard output.<br />
 ## There are three different logging levels for the class:
 ## <ul><li>#logNone: do not log anything</li>
@@ -75,7 +75,7 @@ class proto2cpp:
     self.logFile = "proto2cpp.log"
     ## Error log file name.
     self.errorLogFile = "proto2cpp.error.log"
-    ## Logging level. 
+    ## Logging level.
     self.logLevel = self.logNone
 
   ## Handles a file.
@@ -90,7 +90,7 @@ class proto2cpp:
     if fnmatch.fnmatch(filename, '*.proto'):
       self.log('\nXXXXXXXXXX\nXX ' + filename + '\nXXXXXXXXXX\n\n')
       # Open the file. Use try to detect whether or not we have an actual file.
-      if (sys.version_info > (3, 0)):
+      if (sys.version_info >= (3, 0)):
         try:
           with open(filename, 'r', encoding='utf8') as inputFile:
             self.parseFile(inputFile)
@@ -136,11 +136,11 @@ class proto2cpp:
       self.log('\nXXXXXXXXXX\nXX ' + filename + ' --skipped--\nXXXXXXXXXX\n\n')
 
   ## Parser function.
-  ## 
+  ##
   ## The function takes a .proto file object as input
   ## parameter and modifies the contents into C++ style.
   ## The modified data is printed into standard output.
-  ## 
+  ##
   ## @param inputFile Input file object
   #
   def parseFile(self, inputFile):
@@ -161,46 +161,46 @@ class proto2cpp:
       if matchSemicolon is not None and (matchComment is not None and matchSemicolon.start() < matchComment.start()):
         comment = "///<" + line[matchComment.end():]
         # Replace '.' in nested message references with '::'
-        # don't work for multi-nested references and generates problems with URLs and acronyms 
+        # don't work for multi-nested references and generates problems with URLs and acronyms
         #comment = re.sub(r'\s(\w+)\.(\w+)\s', r' \1::\2 ', comment)
         line = line[:matchComment.start()]
       elif matchComment is not None:
         comment = "///" + line[matchComment.end():]
         # replace '.' in nested message references with '::'
-        # don't work for multi-nested references and generates problems with URLs and acronyms 
+        # don't work for multi-nested references and generates problems with URLs and acronyms
         #comment = re.sub(r'\s(\w+)\.(\w+)\s', r' \1::\2 ', comment)
         line = line[:matchComment.start()]
       else:
         comment = ""
-      
+
       # line = line.replace(".", "::") but not in quoted strings (Necessary for import statement)
       line = re.sub(r'\.(?=(?:[^"]*"[^"]*")*[^"]*$)',r'::',line)
 
       # Search for " option ...;", remove it
       line = re.sub(r'\boption\b[^;]+;', r'', line)
-      
+
       # Search for " package ", make a namespace
       matchPackage = re.search(r"\bpackage\b", line)
       if matchPackage is not None:
         isPackage = True
         # Convert to C++-style separator and block instead of statement
         line = "namespace" + line[:matchPackage.start()] + line[matchPackage.end():].replace(";", " {")
-        
+
       # Search for " repeated " fields and make them ...
       #matchRepeated = re.search(r"\brepeated\b", line)
       #if matchRepeated is not None:
       #  # Convert
       #  line = re.sub(r'\brepeated\s+(\S+)', r' repeated \1', line)
-        
+
       # Search for "enum", start changing all semicolons (";") to commas (",").
       matchEnum = re.search(r"\benum\b", line)
       if matchEnum is not None:
         isEnum = True
-        
+
       # Search semicolon if we have detected an enum, and replace semicolon with comma.
       if isEnum is True and matchSemicolon is not None:
         line = line.replace(";", ",")
-        
+
       # Search for a closing brace.
       matchClosingBrace = re.search("}", line)
       if isEnum is True and matchClosingBrace is not None:
@@ -210,12 +210,12 @@ class proto2cpp:
         # Message (to be struct) ends => add semicolon so that it'll
         # be a proper C(++) struct and Doxygen will handle it correctly.
         line = line[:matchClosingBrace.start()] + "};" + line[matchClosingBrace.end():]
-        
+
       # Replacements change start of comment...
       matchMsg = re.search(r"\bmessage\b", line)
       if matchMsg is not None:
         line = line[:matchMsg.start()] + "struct" + line[matchMsg.end():]
-        
+
       # Replacements change start of comment...
       matchExt = re.search(r"\bextend\b", line)
       if matchExt is not None:
@@ -226,16 +226,16 @@ class proto2cpp:
           name = re.sub(r'\w+::',r'',name)
           a_extend = a_extend[:matchName.start()] + name + ": public " + a_extend[matchName.start():]
         else:
-          a_extend = "_Dummy: public " + a_extend;   
+          a_extend = "_Dummy: public " + a_extend;
         line = line[:matchExt.start()] + "struct " + a_extend
-        
+
       theOutput += line + comment
-        
+
     if isPackage:
       # Close the package namespace
       theOutput += "}"
       isPackage = False
-        
+
     # Now that we've got all lines in the string let's split the lines and print out
     # one by one.
     # This is a workaround to get rid of extra empty line at the end which print() method adds.
@@ -246,7 +246,7 @@ class proto2cpp:
         # Our logger does not add extra line breaks so explicitly adding one to make the log more readable.
         self.log(line + '\n')
       else:
-        self.log('\n   --- skipped empty line')
+        self.log('\n   --- skipped empty line\n')
 
   ## Writes @p string to log file.
   ##
