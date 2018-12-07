@@ -177,7 +177,9 @@ class proto2cpp:
         line = line[:matchComment.start()]
       else:
         comment = ""
-        if isMultilineComment:
+      
+      # End multiline comment, if there is no comment or if there are some chars before the comment.
+      if (matchComment is None or len(re.sub(r'\S*',r'',line))>0) and isMultilineComment:
             theOutput += " */\n"
             isMultilineComment = False
 
