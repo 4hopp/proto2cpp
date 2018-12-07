@@ -4,7 +4,7 @@
 # This script converts .proto files into C++ style ones
 # and prints the output to standard output.
 #
-# version 0.7-beta OSI
+# version 0.8-beta OSI
 #
 # How to enable this filter in Doxygen:
 #   1. Generate Doxygen configuration file with command 'doxygen -g <filename>'
@@ -21,7 +21,8 @@
 #        doxygen doxyfile
 #
 #
-# Version 0.7 2018 Bugfix and extensions have been made by Open Simulation Interface (OSI) Carsten Kuebler https://github.com/OpenSimulationInterface
+# Version 0.8 2018 Bugfix regarding long comments, remove typo
+# Version 0.7 2018 Bugfix and extensions have been made by Open Simulation Interface (OSI) Carsten Kuebler https://github.com/OpenSimulationInterface,
 # Copyright (C) 2016 Regents of the University of California https://github.com/vgteam/vg
 # Copyright (C) 2012-2015 Timo Marjoniemi https://sourceforge.net/p/proto2cpp/wiki/Home/
 # All rights reserved.
