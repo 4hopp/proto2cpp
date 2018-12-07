@@ -146,7 +146,8 @@ class proto2cpp:
   def parseFile(self, inputFile):
     # Go through the input file line by line.
     isEnum = False
-    inPackage = False
+    isPackage = False
+    isMultilineComment = False
     # This variable is here as a workaround for not getting extra line breaks (each line
     # ends with a line separator and print() method will add another one).
     # We will be adding lines into this var and then print the var out at the end.
@@ -165,13 +166,20 @@ class proto2cpp:
         #comment = re.sub(r'\s(\w+)\.(\w+)\s', r' \1::\2 ', comment)
         line = line[:matchComment.start()]
       elif matchComment is not None:
-        comment = "///" + line[matchComment.end():]
+        if isMultilineComment:
+            comment = " * " + line[matchComment.end():]
+        else:
+            comment = "/** " + line[matchComment.end():]
+            isMultilineComment = True
         # replace '.' in nested message references with '::'
         # don't work for multi-nested references and generates problems with URLs and acronyms
         #comment = re.sub(r'\s(\w+)\.(\w+)\s', r' \1::\2 ', comment)
         line = line[:matchComment.start()]
       else:
         comment = ""
+        if isMultilineComment:
+            theOutput += " */\n"
+            isMultilineComment = False
 
       # line = line.replace(".", "::") but not in quoted strings (Necessary for import statement)
       line = re.sub(r'\.(?=(?:[^"]*"[^"]*")*[^"]*$)',r'::',line)
