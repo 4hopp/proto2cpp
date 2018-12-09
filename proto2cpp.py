@@ -180,7 +180,7 @@ class proto2cpp:
         comment = ""
       
       # End multiline comment, if there is no comment or if there are some chars before the comment.
-      if (matchComment is None or re.search("\S", line) is not None) and isMultilineComment:
+      if (matchComment is None or len(line.strip())>0) and isMultilineComment:
         theOutput += " */\n"
         isMultilineComment = False
 
@@ -240,7 +240,7 @@ class proto2cpp:
           a_extend = "_Dummy: public " + a_extend;
         line = line[:matchExt.start()] + "struct " + a_extend
 
-      theOutput += line + comment
+      theOutput += (line.strip() + ' ' + comment.strip()).strip() + '\n'
 
     if isPackage:
       # Close the package namespace
@@ -253,11 +253,8 @@ class proto2cpp:
     lines = theOutput.splitlines()
     for line in lines:
       if len(line) > 0:
-        print(line)
-        # Our logger does not add extra line breaks so explicitly adding one to make the log more readable.
+        print(line) # Add linebreak to generate documentation correct.
         self.log(line + '\n')
-      else:
-        self.log('\n   --- skipped empty line\n')
 
   ## Writes @p string to log file.
   ##
