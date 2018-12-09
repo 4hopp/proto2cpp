@@ -9,15 +9,13 @@
 # How to enable this filter in Doxygen:
 #   1. Generate Doxygen configuration file with command 'doxygen -g <filename>'
 #        e.g.  doxygen -g doxyfile
-#   2. In the Doxygen configuration file, find JAVADOC_AUTOBRIEF and set it enabled
-#        JAVADOC_AUTOBRIEF      = YES
-#   3. In the Doxygen configuration file, find FILE_PATTERNS and add *.proto
+#   2. In the Doxygen configuration file, find FILE_PATTERNS and add *.proto
 #        FILE_PATTERNS          = *.proto
-#   4. In the Doxygen configuration file, find EXTENSION_MAPPING and add proto=C++
-#        EXTENSION_MAPPING      = proto=C
-#   5. In the Doxygen configuration file, find INPUT_FILTER and add this script
+#   3. In the Doxygen configuration file, find EXTENSION_MAPPING and add proto=C++
+#        EXTENSION_MAPPING      = proto=C++
+#   4. In the Doxygen configuration file, find INPUT_FILTER and add this script
 #        INPUT_FILTER           = "python proto2cpp.py"
-#   6. Run Doxygen with the modified configuration
+#   5. Run Doxygen with the modified configuration
 #        doxygen doxyfile
 #
 #
