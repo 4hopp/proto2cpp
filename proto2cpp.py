@@ -4,24 +4,23 @@
 # This script converts .proto files into C++ style ones
 # and prints the output to standard output.
 #
-# version 0.7-beta OSI
+# version 0.8-beta OSI
 #
 # How to enable this filter in Doxygen:
 #   1. Generate Doxygen configuration file with command 'doxygen -g <filename>'
 #        e.g.  doxygen -g doxyfile
-#   2. In the Doxygen configuration file, find JAVADOC_AUTOBRIEF and set it enabled
-#        JAVADOC_AUTOBRIEF      = YES
-#   3. In the Doxygen configuration file, find FILE_PATTERNS and add *.proto
+#   2. In the Doxygen configuration file, find FILE_PATTERNS and add *.proto
 #        FILE_PATTERNS          = *.proto
-#   4. In the Doxygen configuration file, find EXTENSION_MAPPING and add proto=C++
-#        EXTENSION_MAPPING      = proto=C
-#   5. In the Doxygen configuration file, find INPUT_FILTER and add this script
+#   3. In the Doxygen configuration file, find EXTENSION_MAPPING and add proto=C++
+#        EXTENSION_MAPPING      = proto=C++
+#   4. In the Doxygen configuration file, find INPUT_FILTER and add this script
 #        INPUT_FILTER           = "python proto2cpp.py"
-#   6. Run Doxygen with the modified configuration
+#   5. Run Doxygen with the modified configuration
 #        doxygen doxyfile
 #
 #
-# Version 0.7 2018 Bugfix and extensions have been made by Open Simulation Interface (OSI) Carsten Kuebler https://github.com/OpenSimulationInterface
+# Version 0.8 2018 Bugfix regarding long comments, remove typo
+# Version 0.7 2018 Bugfix and extensions have been made by Open Simulation Interface (OSI) Carsten Kuebler https://github.com/OpenSimulationInterface,
 # Copyright (C) 2016 Regents of the University of California https://github.com/vgteam/vg
 # Copyright (C) 2012-2015 Timo Marjoniemi https://sourceforge.net/p/proto2cpp/wiki/Home/
 # All rights reserved.
@@ -146,7 +145,8 @@ class proto2cpp:
   def parseFile(self, inputFile):
     # Go through the input file line by line.
     isEnum = False
-    inPackage = False
+    isPackage = False
+    isMultilineComment = False
     # This variable is here as a workaround for not getting extra line breaks (each line
     # ends with a line separator and print() method will add another one).
     # We will be adding lines into this var and then print the var out at the end.
@@ -165,13 +165,22 @@ class proto2cpp:
         #comment = re.sub(r'\s(\w+)\.(\w+)\s', r' \1::\2 ', comment)
         line = line[:matchComment.start()]
       elif matchComment is not None:
-        comment = "///" + line[matchComment.end():]
+        if isMultilineComment:
+            comment = " * " + line[matchComment.end():]
+        else:
+            comment = "/** " + line[matchComment.end():]
+            isMultilineComment = True
         # replace '.' in nested message references with '::'
         # don't work for multi-nested references and generates problems with URLs and acronyms
         #comment = re.sub(r'\s(\w+)\.(\w+)\s', r' \1::\2 ', comment)
         line = line[:matchComment.start()]
       else:
         comment = ""
+      
+      # End multiline comment, if there is no comment or if there are some chars before the comment.
+      if (matchComment is None or len(line.strip())>0) and isMultilineComment:
+        theOutput += " */\n"
+        isMultilineComment = False
 
       # line = line.replace(".", "::") but not in quoted strings (Necessary for import statement)
       line = re.sub(r'\.(?=(?:[^"]*"[^"]*")*[^"]*$)',r'::',line)
@@ -229,7 +238,7 @@ class proto2cpp:
           a_extend = "_Dummy: public " + a_extend;
         line = line[:matchExt.start()] + "struct " + a_extend
 
-      theOutput += line + comment
+      theOutput += (line.strip() + ' ' + comment.strip()).strip() + '\n'
 
     if isPackage:
       # Close the package namespace
@@ -242,11 +251,8 @@ class proto2cpp:
     lines = theOutput.splitlines()
     for line in lines:
       if len(line) > 0:
-        print(line)
-        # Our logger does not add extra line breaks so explicitly adding one to make the log more readable.
+        print(line) # Add linebreak to generate documentation correct.
         self.log(line + '\n')
-      else:
-        self.log('\n   --- skipped empty line\n')
 
   ## Writes @p string to log file.
   ##
