@@ -1,11 +1,46 @@
 = Enabling the Doxygen filter for Google Protocol Buffers .proto files
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-Et malesuada fames ac turpis egestas.
-Mauris pharetra et ultrices neque ornare aenean euismod elementum nisi.
-Nulla facilisi morbi tempus iaculis urna id. Justo eget magna fermentum iaculis.
-Sed augue lacus viverra vitae congue eu.
-Velit ut tortor pretium viverra suspendisse.
-Amet commodo nulla facilisi nullam vehicula ipsum a.
-Nibh nisl condimentum id venenatis a.
-Diam vel quam elementum pulvinar etiam non quam lacus suspendisse.
+You have to create an appropriate Doxygen configuration file to use Doxygen with .proto files.
+
+**Prerequisites**
+
+You have installed _Doxygen_.
+
+**Steps**
+
+. Open a command line interpreter.
+. Generate a Doxygen configuration file.
++
+[source]
+----
+ doxygen -g <filename>
+----
++
+. In the Doxygen configuration file, find `FILE_PATTERNS` and add `*.proto`:
++
+[source]
+----
+FILE_PATTERNS = *.proto
+----
++
+. In the Doxygen configuration file, find `EXTENSION_MAPPING` and add `proto=C++`: 
++
+[source]
+----
+EXTENSION_MAPPING = proto=C++
+----
++
+. In the Doxygen configuration file, find `INPUT_FILTER` and add this script: 
++
+[source]
+----
+INPUT_FILTER = “python proto2cpp.py”
+----
+
+**What to do next**
+
+Run Doxygen with the modified configuration file.
+
+//TODO: Can't we just omit the following information? If it is not necessary, and does not add anything useful, then there is no reason to include it.
+
+//Following change is recommended by Timo Marjoniemi but must not be used: In the Doxygen configuration file, find JAVADOC_AUTOBRIEF and set it enabled: JAVADOC_AUTOBRIEF = YES
