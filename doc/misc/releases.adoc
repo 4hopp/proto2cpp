@@ -1,11 +1,39 @@
 = Releases
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-Et malesuada fames ac turpis egestas.
-Mauris pharetra et ultrices neque ornare aenean euismod elementum nisi.
-Nulla facilisi morbi tempus iaculis urna id. Justo eget magna fermentum iaculis.
-Sed augue lacus viverra vitae congue eu.
-Velit ut tortor pretium viverra suspendisse.
-Amet commodo nulla facilisi nullam vehicula ipsum a.
-Nibh nisl condimentum id venenatis a.
-Diam vel quam elementum pulvinar etiam non quam lacus suspendisse.
+0.8-beta (2018-12-09) OSI::
+* Bugfix regarding long comments, remove typo.
+* Bugfix and extensions have been made by Open Simulation Interface (OSI) Carsten Kuebler https://github.com/OpenSimulationInterface.
+
+0.7-beta (2018-04-19) OSI::
+* Include changes from University of California.
+* Support for all OSI *.proto files.
+* Separate statement and comments to treat both parts differently (remove bugs regarding string modifications).
+* Remove `option` statements.
+* Add support for `extend` statements.
+* Change `repeat` from Template to standard member. This results in better collaboration diagrams.
+* Fix problems with references of nested messages (replace `.` with `::`).
+* Change mapping from C to C++.
+* Bugfix and extensions have been made by Open Simulation Interface (OSI) Carsten Kuebler https://github.com/OpenSimulationInterface
+
+0.6-beta (2015-07-27)::
+* Made output more compact by removing extra empty lines and not moving member comments before the member but keeping it after the member instead. These changes make enabling `JAVADOC_AUTOBRIEF` mandatory.
+* Added steps for enabling the filter in Doxygen in this file.
+
+0.5-beta (2014-11-16)::
+* Fixed enum ending to have semicolon and proper enum syntax in struct (thanks to m47iast for pointing this out).
+
+0.4-beta (2013-08-29)::
+* Classified proto2cpp and updated documentation to make the script itself Doxygen compatible.
+* Changed all `print` statements to `print()` functions. 64-bit Python v3.3.1 running on 64-bit Windows 7 Home Premium did not automatically convert `print` statements to `print()` functions but instead raised a syntax error.
+* Made a change so that .proto files are converted before printing and other files are printed to stdout as is. This allows using the filter with multiple file types.
+
+0.3-alpha (2013-01-29)::
+* Moved .proto file parsing logic to another function.
+* Added comments to the file.
+
+0.2-pre-alpha (2012-06-15)::
+* Added support for enums.
+
+0.1-pre-alpha (2012-06-13)::
+* Initial version.
+
