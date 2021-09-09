@@ -1,19 +1,19 @@
 = Releases
 
 0.8-beta (2018-12-09) OSI::
-* Bugfix regarding long comments, remove typo.
-* Bugfix and extensions have been made by Open Simulation Interface (OSI) Carsten Kuebler https://github.com/OpenSimulationInterface.
+* Bugfixes in long comments and typo removed.
+* Bugfixes and extensions have been made by Open Simulation Interface (OSI) Carsten Kuebler https://github.com/OpenSimulationInterface.
 
 0.7-beta (2018-04-19) OSI::
-* Include changes from University of California.
-* Support for all OSI *.proto files.
-* Separate statement and comments to treat both parts differently (remove bugs regarding string modifications).
-* Remove `option` statements.
-* Add support for `extend` statements.
-* Change `repeat` from Template to standard member. This results in better collaboration diagrams.
-* Fix problems with references of nested messages (replace `.` with `::`).
+* Included changes from University of California.
+* Added for all OSI *.proto files.
+* Separated statement and comments to treat both parts differently (removed bugs in string modifications).
+* Removed `option` statements.
+* Added support for `extend` statements.
+* Changed `repeat` from template to standard member, thereby improving collaboration diagrams.
+* Fixed problems with references of nested messages (replace `.` with `::`).
 * Change mapping from C to C++.
-* Bugfix and extensions have been made by Open Simulation Interface (OSI) Carsten Kuebler https://github.com/OpenSimulationInterface
+* Bugfixes and extensions have been made by Open Simulation Interface (OSI) Carsten Kuebler https://github.com/OpenSimulationInterface
 
 0.6-beta (2015-07-27)::
 * Made output more compact by removing extra empty lines and not moving member comments before the member but keeping it after the member instead. These changes make enabling `JAVADOC_AUTOBRIEF` mandatory.
@@ -25,7 +25,8 @@
 0.4-beta (2013-08-29)::
 * Classified proto2cpp and updated documentation to make the script itself Doxygen compatible.
 * Changed all `print` statements to `print()` functions. 64-bit Python v3.3.1 running on 64-bit Windows 7 Home Premium did not automatically convert `print` statements to `print()` functions but instead raised a syntax error.
-* Made a change so that .proto files are converted before printing and other files are printed to stdout as is. This allows using the filter with multiple file types.
+* Made a change so that .proto files are converted before printing and other files are printed to stdout as is.
+This makes it possible to use the filter with multiple file types.
 
 0.3-alpha (2013-01-29)::
 * Moved .proto file parsing logic to another function.

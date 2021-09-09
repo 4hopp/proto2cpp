@@ -1,5 +1,5 @@
-= The idea of proto2cpp
+= Idea behind proto2cpp
 
 Open Simulation Interface uses Doxygen to generate its reference documentation.
 OSI provides a Doxygen filter for generating its reference documentation from .proto files.
-This Doxygen filter is based on a similiar filter by https://sourceforge.net/p/proto2cpp/wiki/Home/[Timo Marjoniemi].
+This Doxygen filter is based on a similar filter by https://sourceforge.net/p/proto2cpp/wiki/Home/[Timo Marjoniemi].
