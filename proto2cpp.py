@@ -93,6 +93,8 @@ class proto2cpp:
         pass
       except IOError as e:
         self.logError('the file ' + filename + ' could not be opened for reading')
+      except ValueError as e:
+        self.logError('Parsing of ' + filename + ' failed :' + str(e))
 
     elif not fnmatch.fnmatch(filename, os.path.basename(inspect.getfile(inspect.currentframe()))):
       self.log('\nXXXXXXXXXX\nXX ' + filename + '\nXXXXXXXXXX\n\n')
@@ -120,6 +122,7 @@ class proto2cpp:
   def parseFile(self, inputFile):
     # Go through the input file line by line.
     isEnum = False
+    isOneof = False
     # This variable is here as a workaround for not getting extra line breaks (each line
     # ends with a line separator and print() method will add another one).
     # We will be adding lines into this var and then print the var out at the end.
@@ -147,13 +150,29 @@ class proto2cpp:
         line = line[:matchSemicolon.start()] + "," + line[matchSemicolon.end():]
       # Search for a closing brace.
       matchClosingBrace = re.search("}", line[:matchComment.start()] if matchComment else line)
-      if isEnum is True and matchClosingBrace is not None:
-        line = line[:matchClosingBrace.start()] + "};" + line[matchClosingBrace.end():]
-        isEnum = False
-      elif isEnum is False and matchClosingBrace is not None:
-        # Message (to be struct) ends => add semicolon so that it'll
-        # be a proper C(++) struct and Doxygen will handle it correctly.
-        line = line[:matchClosingBrace.start()] + "};" + line[matchClosingBrace.end():]
+      if matchClosingBrace is not None:
+        if isEnum is True:
+          line = line[:matchClosingBrace.start()] + "};" + line[matchClosingBrace.end():]
+          isEnum = False
+        elif isOneof is True:
+          line = line[:matchClosingBrace.end()] + " " + matchOneofName.group(0) + ";" + line[matchClosingBrace.end():]
+          isOneof = False
+        else:
+          # Message (to be struct) ends => add semicolon so that it'll
+          # be a proper C(++) struct and Doxygen will handle it correctly.
+          line = line[:matchClosingBrace.start()] + "};" + line[matchClosingBrace.end():]
+      if isEnum is True and isOneof is True:
+        raise ValueError("Found enum in oneof or vis-versa")
+
+      # Search for "oneof" and if one is found before comment,
+      # Replace them with named union to get proper linking by doxygen.
+      matchOneof = re.search(r'\boneof\b', line)
+      if matchOneof is not None and (matchComment is None or matchOneof.start() < matchComment.start()):
+        isOneof = True
+        # Save the name of the enum
+        matchOneofName = re.search(r'(?<=\boneof\s)(\w+)', line)
+        line = line[:matchOneof.start()] + "union" + line[matchOneof.end():]
+
       # Search for 'message' and replace it with 'struct' unless 'message' is behind a comment.
       matchMsg = re.search(r'\bmessage\b', line)
       if matchMsg is not None and (matchComment is None or matchMsg.start() < matchComment.start()):
