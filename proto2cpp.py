@@ -138,7 +138,7 @@ class proto2cpp:
 
       # Search for "enum" and if one is found before comment,
       # start changing all semicolons (";") to commas (",").
-      matchEnum = re.search("enum", line)
+      matchEnum = re.search(r'\benum\b', line)
       if matchEnum is not None and (matchComment is None or matchEnum.start() < matchComment.start()):
         isEnum = True
       # Search again for semicolon if we have detected an enum, and replace semicolon with comma.
@@ -155,7 +155,7 @@ class proto2cpp:
         # be a proper C(++) struct and Doxygen will handle it correctly.
         line = line[:matchClosingBrace.start()] + "};" + line[matchClosingBrace.end():]
       # Search for 'message' and replace it with 'struct' unless 'message' is behind a comment.
-      matchMsg = re.search("message", line)
+      matchMsg = re.search(r'\bmessage\b', line)
       if matchMsg is not None and (matchComment is None or matchMsg.start() < matchComment.start()):
         output = "struct" + line[:matchMsg.start()] + line[matchMsg.end():]
         theOutput += output
